@@ -1,0 +1,31 @@
+{
+  "name": "@biscxit/discord-module-loader",
+  "version": "1.0.0",
+  "description": "Dynamically load events and commands for Discord.js.",
+  "author": {
+    "name": "biscxit",
+    "url": "https://github.com/biscxit"
+  },
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "rimraf lib && tsc",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "dependencies": {
+    "discord.js": "^14.8.0",
+    "tiny-glob": "^0.2.9"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.5",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "^2.8.6",
+    "rimraf": "^4.4.1",
+    "typescript": "^5.0.2"
+  }
+}
