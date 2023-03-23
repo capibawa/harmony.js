@@ -6,6 +6,10 @@
     "name": "biscxit",
     "url": "https://github.com/biscxit"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/biscxit/discord-module-loader"
+  },
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
