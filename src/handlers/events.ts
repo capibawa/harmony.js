@@ -22,7 +22,7 @@ export async function loadEvents(client: Client) {
   }
 
   console.log(
-    `Loaded ${count} ${count > 1 ? `events` : `event`}: ` +
+    `Loaded ${count} ${count === 1 ? `event` : `events`}: ` +
       events.map((event) => event.name).join(', ')
   );
 }

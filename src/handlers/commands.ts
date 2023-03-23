@@ -28,7 +28,7 @@ export async function loadCommands(client: Client) {
   }
 
   console.log(
-    `Loaded ${count} ${count > 1 ? `commands` : `command`}: ` +
+    `Loaded ${count} ${count === 1 ? `command` : `commands`}: ` +
       client.commands.map((command) => command.data.name).join(', ')
   );
 }
