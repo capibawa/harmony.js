@@ -1,11 +1,11 @@
-import { getFiles } from '../lib/helpers';
 import Client from '../structures/client';
 import Event from '../structures/event';
+import { getFiles } from '../utils/helpers';
 
 export async function loadEvents(client: Client) {
   let count = 0;
 
-  const events = (await getFiles('events')) as Array<Event>;
+  const events = (await getFiles(client.rootDir, 'events')) as Array<Event>;
 
   for (const event of events) {
     if (!(event instanceof Event)) {

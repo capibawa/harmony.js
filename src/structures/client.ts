@@ -1,6 +1,6 @@
 import {
   Client as DiscordClient,
-  ClientOptions,
+  ClientOptions as DiscordClientOptions,
   Collection,
   Colors,
   EmbedBuilder,
@@ -12,11 +12,21 @@ import { loadCommands } from '../handlers/commands';
 import { loadEvents } from '../handlers/events';
 import Command from './command';
 
+export interface ClientOptions extends DiscordClientOptions {
+  rootDir: string;
+}
+
 export default class Client extends DiscordClient {
+  rootDir: string;
+
   commands = new Collection<string, Command>();
 
   constructor(options: ClientOptions) {
-    super(options);
+    const { rootDir, ...rest } = options;
+
+    super(rest);
+
+    this.rootDir = rootDir || './';
 
     this.once(Events.ClientReady, async () => {
       await this.deployCommands();
