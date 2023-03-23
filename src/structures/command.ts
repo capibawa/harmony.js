@@ -3,6 +3,7 @@ import {
   ContextMenuCommandBuilder,
   ContextMenuCommandInteraction,
   MessageContextMenuCommandInteraction,
+  PermissionResolvable,
   SlashCommandBuilder,
   SlashCommandSubcommandsOnlyBuilder,
   UserContextMenuCommandInteraction,
@@ -15,6 +16,8 @@ export interface CommandOptions {
     | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
     | SlashCommandSubcommandsOnlyBuilder
     | ContextMenuCommandBuilder;
+  requiredPermissions?: PermissionResolvable;
+  requiredBotPermissions?: PermissionResolvable;
   execute(
     interaction:
       | ChatInputCommandInteraction
@@ -27,10 +30,14 @@ export interface CommandOptions {
 
 export default class Command {
   data: CommandOptions['data'];
+  requiredPermissions: CommandOptions['requiredPermissions'];
+  requiredBotPermissions: CommandOptions['requiredBotPermissions'];
   execute: CommandOptions['execute'];
 
   constructor(options: CommandOptions) {
     this.data = options.data;
+    this.requiredPermissions = options.requiredPermissions;
+    this.requiredBotPermissions = options.requiredBotPermissions;
     this.execute = options.execute;
   }
 }

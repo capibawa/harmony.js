@@ -2,14 +2,14 @@ import {
   Client as DiscordClient,
   ClientOptions as DiscordClientOptions,
   Collection,
-  Colors,
-  EmbedBuilder,
   Events,
+  GuildMember,
   Interaction,
 } from 'discord.js';
 
 import { loadCommands } from '../handlers/commands';
 import { loadEvents } from '../handlers/events';
+import { createErrorEmbed } from '../utils/embeds';
 import Command from './command';
 
 export interface ClientOptions extends DiscordClientOptions {
@@ -77,23 +77,76 @@ export default class Client extends DiscordClient {
       return;
     }
 
+    if (command.requiredPermissions) {
+      const memberPermissions = (interaction.member as GuildMember)
+        ?.permissions;
+
+      if (!memberPermissions) {
+        await interaction.reply({
+          embeds: [createErrorEmbed('Failed to fetch member permissions.')],
+        });
+
+        return;
+      }
+
+      const missingPermissions = memberPermissions.missing(
+        command.requiredPermissions
+      );
+
+      if (missingPermissions.length > 0) {
+        await interaction.reply({
+          embeds: [
+            createErrorEmbed(
+              `Missing member permissions: ${missingPermissions.join(', ')}`
+            ),
+          ],
+        });
+
+        return;
+      }
+    }
+
+    if (command.requiredBotPermissions) {
+      const botPermissions = interaction.guild?.members.me?.permissions;
+
+      if (!botPermissions) {
+        await interaction.reply({
+          embeds: [createErrorEmbed('Failed to fetch bot permissions.')],
+        });
+
+        return;
+      }
+
+      const missingPermissions = botPermissions.missing(
+        command.requiredBotPermissions
+      );
+
+      if (missingPermissions.length > 0) {
+        await interaction.reply({
+          embeds: [
+            createErrorEmbed(
+              `Missing bot permissions: ${missingPermissions.join(', ')}`
+            ),
+          ],
+        });
+
+        return;
+      }
+    }
+
     try {
       await command.execute(interaction, this);
     } catch (err) {
       console.error(err);
 
-      const embed = new EmbedBuilder()
-        .setColor(Colors.Red)
-        .setDescription('An error occurred while executing this command.');
-
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
-          embeds: [embed],
+          embeds: [createErrorEmbed('Unknown error.')],
           ephemeral: true,
         });
       } else {
         await interaction.reply({
-          embeds: [embed],
+          embeds: [createErrorEmbed('Unknown error.')],
           ephemeral: true,
         });
       }
