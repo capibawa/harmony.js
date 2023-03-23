@@ -13,7 +13,7 @@ import { loadEvents } from '../handlers/events';
 import Command from './command';
 
 export interface ClientOptions extends DiscordClientOptions {
-  rootDir: string;
+  rootDir?: string;
 }
 
 export default class Client extends DiscordClient {
@@ -26,7 +26,7 @@ export default class Client extends DiscordClient {
 
     super(rest);
 
-    this.rootDir = rootDir || './';
+    this.rootDir = rootDir ?? './';
 
     this.once(Events.ClientReady, async () => {
       await this.deployCommands();
