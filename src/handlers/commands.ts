@@ -5,10 +5,7 @@ import { getFiles } from '../utils/helpers';
 export async function loadCommands(client: Client) {
   let count = 0;
 
-  const commands = (await getFiles(
-    client.rootDir,
-    'commands'
-  )) as Array<Command>;
+  const commands = (await getFiles(client.commandsDir)) as Array<Command>;
 
   for (const command of commands) {
     if (!(command instanceof Command)) {

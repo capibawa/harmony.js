@@ -13,20 +13,23 @@ import { loadEvents } from '../handlers/events';
 import Command from './command';
 
 export interface ClientOptions extends DiscordClientOptions {
-  rootDir?: string;
+  eventsDir?: string;
+  commandsDir?: string;
 }
 
 export default class Client extends DiscordClient {
-  rootDir: string;
+  eventsDir: string;
+  commandsDir: string;
 
-  commands = new Collection<string, Command>();
+  commands: Collection<string, Command> = new Collection();
 
   constructor(options: ClientOptions) {
-    const { rootDir, ...rest } = options;
+    const { eventsDir, commandsDir, ...rest } = options;
 
     super(rest);
 
-    this.rootDir = rootDir ?? './';
+    this.eventsDir = eventsDir ?? 'events';
+    this.commandsDir = commandsDir ?? 'commands';
 
     this.once(Events.ClientReady, async () => {
       await this.deployCommands();

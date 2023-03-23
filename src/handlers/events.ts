@@ -5,7 +5,7 @@ import { getFiles } from '../utils/helpers';
 export async function loadEvents(client: Client) {
   let count = 0;
 
-  const events = (await getFiles(client.rootDir, 'events')) as Array<Event>;
+  const events = (await getFiles(client.eventsDir)) as Array<Event>;
 
   for (const event of events) {
     if (!(event instanceof Event)) {
