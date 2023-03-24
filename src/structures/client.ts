@@ -83,27 +83,24 @@ export default class Client extends DiscordClient {
       return;
     }
 
-    if (command.requiredPermissions) {
-      const memberPermissions = (interaction.member as GuildMember)
-        ?.permissions;
+    if (command.userPermissions) {
+      const permissions = (interaction.member as GuildMember)?.permissions;
 
-      if (!memberPermissions) {
+      if (!permissions) {
         await interaction.reply({
-          embeds: [createErrorEmbed('Failed to fetch member permissions.')],
+          embeds: [createErrorEmbed('Failed to fetch user permissions.')],
         });
 
         return;
       }
 
-      const missingPermissions = memberPermissions.missing(
-        command.requiredPermissions
-      );
+      const missingPermissions = permissions.missing(command.userPermissions);
 
       if (missingPermissions.length > 0) {
         await interaction.reply({
           embeds: [
             createErrorEmbed(
-              `Missing member permissions: ${missingPermissions.join(', ')}`
+              `Missing user permissions: ${missingPermissions.join(', ')}`
             ),
           ],
         });
@@ -112,10 +109,10 @@ export default class Client extends DiscordClient {
       }
     }
 
-    if (command.requiredBotPermissions) {
-      const botPermissions = interaction.guild?.members.me?.permissions;
+    if (command.botPermissions) {
+      const permissions = interaction.guild?.members.me?.permissions;
 
-      if (!botPermissions) {
+      if (!permissions) {
         await interaction.reply({
           embeds: [createErrorEmbed('Failed to fetch bot permissions.')],
         });
@@ -123,9 +120,7 @@ export default class Client extends DiscordClient {
         return;
       }
 
-      const missingPermissions = botPermissions.missing(
-        command.requiredBotPermissions
-      );
+      const missingPermissions = permissions.missing(command.botPermissions);
 
       if (missingPermissions.length > 0) {
         await interaction.reply({
