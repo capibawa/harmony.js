@@ -3,9 +3,8 @@ import Command from '../structures/command';
 import { getFiles } from '../utils/helpers';
 
 export async function loadCommands(client: Client) {
-  let count = 0;
-
-  const commands = (await getFiles(client.commandsDir)) as Array<Command>;
+  const commandsDir = client.moduleLoader.commandsDir;
+  const commands: Array<Command> = await getFiles(commandsDir);
 
   for (const command of commands) {
     if (!(command instanceof Command)) {
@@ -23,12 +22,11 @@ export async function loadCommands(client: Client) {
     }
 
     client.commands.set(name, command);
-
-    count++;
   }
 
   console.log(
-    `Loaded ${count} ${count === 1 ? `command` : `commands`}: ` +
-      client.commands.map((command) => command.data.name).join(', ')
+    `Loaded ${commands.length} ${
+      commands.length === 1 ? `command` : `commands`
+    }: ` + client.commands.map((command) => command.data.name).join(', ')
   );
 }

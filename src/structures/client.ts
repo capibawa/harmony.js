@@ -12,31 +12,38 @@ import { loadEvents } from '../handlers/events';
 import { createErrorEmbed } from '../utils/embeds';
 import Command from './command';
 
-export interface ClientOptions extends DiscordClientOptions {
+export interface ModuleLoaderOptions {
   eventsDir?: string;
   commandsDir?: string;
 }
 
+export interface ClientOptions extends DiscordClientOptions {
+  moduleLoader?: ModuleLoaderOptions;
+}
+
 export default class Client extends DiscordClient {
-  eventsDir: string;
-  commandsDir: string;
+  moduleLoader: Required<ModuleLoaderOptions> = {
+    eventsDir: 'events',
+    commandsDir: 'commands',
+  };
 
   commands: Collection<string, Command> = new Collection();
 
   constructor(options: ClientOptions) {
-    const { eventsDir, commandsDir, ...rest } = options;
+    const { moduleLoader: moduleLoaderOptions, ...clientOptions } = options;
 
-    super(rest);
+    super(clientOptions);
 
-    this.eventsDir = eventsDir ?? 'events';
-    this.commandsDir = commandsDir ?? 'commands';
+    if (moduleLoaderOptions) {
+      this.moduleLoader = { ...this.moduleLoader, ...moduleLoaderOptions };
+    }
 
     this.once(Events.ClientReady, async () => {
       await this.deployCommands();
     });
 
     this.on(Events.InteractionCreate, async (interaction: Interaction) => {
-      await this.handleCommandInteractions(interaction);
+      await this.handleCommandInteraction(interaction);
     });
   }
 
@@ -56,7 +63,7 @@ export default class Client extends DiscordClient {
     );
   }
 
-  private async handleCommandInteractions(
+  private async handleCommandInteraction(
     interaction: Interaction
   ): Promise<void> {
     if (
@@ -73,7 +80,6 @@ export default class Client extends DiscordClient {
 
     if (!command) {
       console.error(`No command matching ${commandName} was found.`);
-
       return;
     }
 

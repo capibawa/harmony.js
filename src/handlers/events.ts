@@ -3,9 +3,8 @@ import Event from '../structures/event';
 import { getFiles } from '../utils/helpers';
 
 export async function loadEvents(client: Client) {
-  let count = 0;
-
-  const events = (await getFiles(client.eventsDir)) as Array<Event>;
+  const eventsDir = client.moduleLoader.eventsDir;
+  const events: Array<Event> = await getFiles(eventsDir);
 
   for (const event of events) {
     if (!(event instanceof Event)) {
@@ -17,12 +16,10 @@ export async function loadEvents(client: Client) {
     } else {
       client.on(event.name, (...args) => event.execute(...args));
     }
-
-    count++;
   }
 
   console.log(
-    `Loaded ${count} ${count === 1 ? `event` : `events`}: ` +
+    `Loaded ${events.length} ${events.length === 1 ? `event` : `events`}: ` +
       events.map((event) => event.name).join(', ')
   );
 }
