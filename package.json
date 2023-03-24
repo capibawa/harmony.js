@@ -1,6 +1,6 @@
 {
   "name": "@biscxit/discord-module-loader",
-  "version": "1.1.2",
+  "version": "0.2.2",
   "description": "Dynamically load and handle modules for Discord.js.",
   "author": {
     "name": "biscxit",
