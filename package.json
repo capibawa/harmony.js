@@ -13,22 +13,26 @@
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "rimraf lib && tsc",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "test": "echo \"No test specified\""
   },
   "dependencies": {
     "discord.js": "^14.8.0",
     "tiny-glob": "^0.2.9"
   },
   "devDependencies": {
-    "@types/node": "^18.15.6",
+    "@types/node": "^18.15.8",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
-    "prettier": "^2.8.6",
+    "prettier": "^2.8.7",
     "rimraf": "^4.4.1",
     "typescript": "^5.0.2"
   }
