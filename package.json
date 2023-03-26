@@ -20,7 +20,8 @@
     "build": "rimraf lib && tsc",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/*.ts",
-    "test": "echo \"No test specified\""
+    "test": "echo \"No test specified\"",
+    "version": "npm run build"
   },
   "dependencies": {
     "discord.js": "^14.8.0",
