@@ -48,6 +48,23 @@ export async function deployCommands(client: Client): Promise<void> {
   console.log(`Deployed ${client.commands.size} commands.`);
 }
 
+export async function loadInternalValidations(client: Client): Promise<void> {
+  const validationsDir = join(__dirname, 'validations');
+  const validations: Array<Validation> = await getFilesFromPath(validationsDir);
+
+  for (const validation of validations) {
+    if (!(validation instanceof Validation)) {
+      throw new Error(
+        `Validation ${validation} is not an instance of Validation.`
+      );
+    }
+
+    client.validations.push(validation);
+  }
+
+  validationCount = client.validations.length;
+}
+
 export async function loadValidations(client: Client): Promise<void> {
   const validationsDir = client.moduleLoader.validationsDir;
   const validations: Array<Validation> = await getFiles(validationsDir);
@@ -69,21 +86,4 @@ export async function loadValidations(client: Client): Promise<void> {
       validationCount === 1 ? `validation` : `validations`
     }.`
   );
-}
-
-export async function loadInternalValidations(client: Client): Promise<void> {
-  const validationsDir = join(__dirname, 'validations');
-  const validations: Array<Validation> = await getFilesFromPath(validationsDir);
-
-  for (const validation of validations) {
-    if (!(validation instanceof Validation)) {
-      throw new Error(
-        `Validation ${validation} is not an instance of Validation.`
-      );
-    }
-
-    client.validations.push(validation);
-  }
-
-  validationCount += client.validations.length;
 }
