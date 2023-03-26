@@ -1,8 +1,8 @@
-import Client from '../structures/client';
-import Event from '../structures/event';
-import { getFiles } from '../utils/helpers';
+import Client from '../../structures/client';
+import Event from '../../structures/event';
+import { getFiles } from '../../utils/helpers';
 
-export async function loadEvents(client: Client) {
+export async function loadEvents(client: Client): Promise<void> {
   const eventsDir = client.moduleLoader.eventsDir;
   const events: Array<Event> = await getFiles(eventsDir);
 

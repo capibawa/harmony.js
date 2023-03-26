@@ -3,18 +3,24 @@ import {
   ClientOptions as DiscordClientOptions,
   Collection,
   Events,
-  GuildMember,
   Interaction,
 } from 'discord.js';
 
-import { loadCommands } from '../handlers/commands';
+import {
+  deployCommands,
+  loadCommands,
+  loadInternalValidations,
+  loadValidations,
+} from '../handlers/commands';
 import { loadEvents } from '../handlers/events';
 import { createErrorEmbed } from '../utils/embeds';
 import Command from './command';
+import Validator from './validation';
 
 export interface ModuleLoaderOptions {
   eventsDir?: string;
   commandsDir?: string;
+  validationsDir?: string;
 }
 
 export interface ClientOptions extends DiscordClientOptions {
@@ -25,9 +31,11 @@ export default class Client extends DiscordClient {
   moduleLoader: Required<ModuleLoaderOptions> = {
     eventsDir: 'events',
     commandsDir: 'commands',
+    validationsDir: 'validations',
   };
 
   commands: Collection<string, Command> = new Collection();
+  validations: Array<Validator> = [];
 
   constructor(options: ClientOptions) {
     const { moduleLoader: moduleLoaderOptions, ...clientOptions } = options;
@@ -39,7 +47,7 @@ export default class Client extends DiscordClient {
     }
 
     this.once(Events.ClientReady, async () => {
-      await this.deployCommands();
+      await deployCommands(this);
     });
 
     this.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -48,19 +56,14 @@ export default class Client extends DiscordClient {
   }
 
   async initialize(token: string): Promise<void> {
-    await Promise.all([loadEvents(this), loadCommands(this)]);
+    await Promise.all([
+      loadEvents(this),
+      loadCommands(this),
+      loadInternalValidations(this),
+      loadValidations(this),
+    ]);
 
     await this.login(token);
-  }
-
-  private async deployCommands(): Promise<void> {
-    if (!this.isReady()) {
-      throw new Error('Client is not ready.');
-    }
-
-    await this.application.commands.set(
-      this.commands.map((command) => command.data)
-    );
   }
 
   private async handleCommandInteraction(
@@ -83,56 +86,26 @@ export default class Client extends DiscordClient {
       return;
     }
 
-    if (command.userPermissions) {
-      const permissions = (interaction.member as GuildMember)?.permissions;
+    let isValid = true;
 
-      if (!permissions) {
-        await interaction.reply({
-          embeds: [createErrorEmbed('Failed to fetch user permissions.')],
-        });
+    for (const validation of this.validations) {
+      isValid = await validation.execute(command, interaction);
 
-        return;
-      }
-
-      const missingPermissions = permissions.missing(command.userPermissions);
-
-      if (missingPermissions.length > 0) {
-        await interaction.reply({
-          embeds: [
-            createErrorEmbed(
-              `Missing user permissions: ${missingPermissions.join(', ')}`
-            ),
-          ],
-        });
-
-        return;
+      if (!isValid) {
+        break;
       }
     }
 
-    if (command.botPermissions) {
-      const permissions = interaction.guild?.members.me?.permissions;
+    if (!isValid) {
+      const embed = createErrorEmbed('This command cannot be executed.');
 
-      if (!permissions) {
-        await interaction.reply({
-          embeds: [createErrorEmbed('Failed to fetch bot permissions.')],
-        });
-
-        return;
+      if (!interaction.replied && !interaction.deferred) {
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+      } else if (interaction.deferred) {
+        await interaction.editReply({ embeds: [embed] });
       }
 
-      const missingPermissions = permissions.missing(command.botPermissions);
-
-      if (missingPermissions.length > 0) {
-        await interaction.reply({
-          embeds: [
-            createErrorEmbed(
-              `Missing bot permissions: ${missingPermissions.join(', ')}`
-            ),
-          ],
-        });
-
-        return;
-      }
+      return;
     }
 
     try {
@@ -140,16 +113,12 @@ export default class Client extends DiscordClient {
     } catch (err) {
       console.error(err);
 
+      const embed = createErrorEmbed('Unknown error.');
+
       if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({
-          embeds: [createErrorEmbed('Unknown error.')],
-          ephemeral: true,
-        });
+        await interaction.followUp({ embeds: [embed], ephemeral: true });
       } else {
-        await interaction.reply({
-          embeds: [createErrorEmbed('Unknown error.')],
-          ephemeral: true,
-        });
+        await interaction.reply({ embeds: [embed], ephemeral: true });
       }
     }
   }
