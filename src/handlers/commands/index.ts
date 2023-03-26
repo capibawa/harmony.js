@@ -5,8 +5,6 @@ import Command from '../../structures/command';
 import Validation from '../../structures/validation';
 import { getFiles, getFilesFromPath } from '../../utils/helpers';
 
-let validationCount = 0;
-
 export async function loadCommands(client: Client): Promise<void> {
   const commandsDir = client.moduleLoader.commandsDir;
   const commands: Array<Command> = await getFiles(commandsDir);
@@ -61,8 +59,6 @@ export async function loadInternalValidations(client: Client): Promise<void> {
 
     client.validations.push(validation);
   }
-
-  validationCount = client.validations.length;
 }
 
 export async function loadValidations(client: Client): Promise<void> {
@@ -79,11 +75,9 @@ export async function loadValidations(client: Client): Promise<void> {
     client.validations.push(validation);
   }
 
-  validationCount += client.validations.length;
-
   console.log(
-    `Loaded ${validationCount} ${
-      validationCount === 1 ? `validation` : `validations`
+    `Loaded ${client.validations.length} ${
+      client.validations.length === 1 ? `validation` : `validations`
     }.`
   );
 }
