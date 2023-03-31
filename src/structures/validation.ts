@@ -5,6 +5,7 @@ import {
   UserContextMenuCommandInteraction,
 } from 'discord.js';
 
+import Client from './client';
 import Command from './command';
 
 export interface ValidationOptions {
@@ -14,7 +15,8 @@ export interface ValidationOptions {
       | ChatInputCommandInteraction
       | ContextMenuCommandInteraction
       | MessageContextMenuCommandInteraction
-      | UserContextMenuCommandInteraction
+      | UserContextMenuCommandInteraction,
+    client: Client
   ): Promise<boolean>;
 }
 

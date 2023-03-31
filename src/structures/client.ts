@@ -1,10 +1,11 @@
 import {
+  Collection,
   Client as DiscordClient,
   ClientOptions as DiscordClientOptions,
-  Collection,
   Events,
   Interaction,
 } from 'discord.js';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 import {
   deployCommands,
@@ -35,6 +36,7 @@ export default class Client extends DiscordClient {
   };
 
   commands: Collection<string, Command> = new Collection();
+  limiters: Collection<string, RateLimiterMemory> = new Collection();
   validations: Array<Validator> = [];
 
   constructor(options: ClientOptions) {
@@ -89,7 +91,7 @@ export default class Client extends DiscordClient {
     let isValid = true;
 
     for (const validation of this.validations) {
-      isValid = await validation.execute(command, interaction);
+      isValid = await validation.execute(command, interaction, this);
 
       if (!isValid) {
         break;

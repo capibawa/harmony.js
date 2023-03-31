@@ -9,6 +9,7 @@ import {
   UserContextMenuCommandInteraction,
 } from 'discord.js';
 
+import type { RateLimiterOptions } from '../types/rate-limiter-options';
 import Client from './client';
 
 export interface CommandOptions {
@@ -18,6 +19,7 @@ export interface CommandOptions {
     | ContextMenuCommandBuilder;
   userPermissions?: PermissionResolvable;
   botPermissions?: PermissionResolvable;
+  rateLimiter?: RateLimiterOptions;
   execute(
     interaction:
       | ChatInputCommandInteraction
@@ -32,12 +34,14 @@ export default class Command {
   data: CommandOptions['data'];
   userPermissions: CommandOptions['userPermissions'];
   botPermissions: CommandOptions['botPermissions'];
+  rateLimiter: CommandOptions['rateLimiter'];
   execute: CommandOptions['execute'];
 
   constructor(options: CommandOptions) {
     this.data = options.data;
     this.userPermissions = options.userPermissions;
     this.botPermissions = options.botPermissions;
+    this.rateLimiter = options.rateLimiter;
     this.execute = options.execute;
   }
 }
