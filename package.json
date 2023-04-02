@@ -21,7 +21,7 @@
     "version": "npm run build"
   },
   "dependencies": {
-    "discord.js": "^14.8.0",
+    "discord.js": "^14.9.0",
     "rate-limiter-flexible": "^2.4.1",
     "tiny-glob": "^0.2.9"
   },
