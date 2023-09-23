@@ -1,10 +1,15 @@
 import Client from '@/structures/client';
 import Event from '@/structures/event';
 import { getFiles } from '@/utils/helpers';
+import logger from '@/utils/logger';
 
 export async function loadEvents(client: Client): Promise<void> {
-  const eventsDir = client.moduleLoader.eventsDir;
-  const events: Array<Event> = await getFiles(eventsDir);
+  const events: Array<Event> = await getFiles(client.moduleLoader.eventsDir);
+
+  if (!events.length) {
+    logger.info('No events found.');
+    return;
+  }
 
   for (const event of events) {
     if (!(event instanceof Event)) {
@@ -18,8 +23,10 @@ export async function loadEvents(client: Client): Promise<void> {
     }
   }
 
-  console.log(
-    `Loaded ${events.length} ${events.length === 1 ? `event` : `events`}: ` +
-      events.map((event) => event.name).join(', '),
+  logger.info(
+    'Loaded %d %s: [%s]',
+    events.length,
+    events.length === 1 ? 'event' : 'events',
+    events.map((event) => event.name).join(', '),
   );
 }

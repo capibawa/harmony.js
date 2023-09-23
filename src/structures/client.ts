@@ -10,13 +10,13 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 import {
   deployCommands,
   loadCommands,
-  loadInternalValidations,
   loadValidations,
 } from '@/handlers/commands';
 import { loadEvents } from '@/handlers/events';
-import { createErrorEmbed } from '@/utils/embeds';
 import Command from '@/structures/command';
-import Validator from '@/structures/validation';
+import Validation from '@/structures/validation';
+import { createErrorEmbed } from '@/utils/embeds';
+import logger from '@/utils/logger';
 
 export interface ModuleLoaderOptions {
   eventsDir?: string;
@@ -37,7 +37,7 @@ export default class Client extends DiscordClient {
 
   commands: Collection<string, Command> = new Collection();
   limiters: Collection<string, RateLimiterMemory> = new Collection();
-  validations: Array<Validator> = [];
+  validations: Array<Validation> = [];
 
   constructor(options: ClientOptions) {
     const { moduleLoader: moduleLoaderOptions, ...clientOptions } = options;
@@ -61,7 +61,6 @@ export default class Client extends DiscordClient {
     await Promise.all([
       loadEvents(this),
       loadCommands(this),
-      loadInternalValidations(this),
       loadValidations(this),
     ]);
 
@@ -84,7 +83,7 @@ export default class Client extends DiscordClient {
     const command = this.commands.get(commandName);
 
     if (!command) {
-      console.error(`No command matching ${commandName} was found.`);
+      logger.error('No command matching %s was found.', commandName);
       return;
     }
 
@@ -113,7 +112,7 @@ export default class Client extends DiscordClient {
     try {
       await command.execute(interaction, this);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
 
       const embed = createErrorEmbed('Unknown error.');
 

@@ -4,10 +4,17 @@ import Client from '@/structures/client';
 import Command from '@/structures/command';
 import Validation from '@/structures/validation';
 import { getFiles, getFilesFromPath } from '@/utils/helpers';
+import logger from '@/utils/logger';
 
 export async function loadCommands(client: Client): Promise<void> {
-  const commandsDir = client.moduleLoader.commandsDir;
-  const commands: Array<Command> = await getFiles(commandsDir);
+  const commands: Array<Command> = await getFiles(
+    client.moduleLoader.commandsDir,
+  );
+
+  if (!commands.length) {
+    logger.info('No commands found.');
+    return;
+  }
 
   for (const command of commands) {
     if (!(command instanceof Command)) {
@@ -27,10 +34,11 @@ export async function loadCommands(client: Client): Promise<void> {
     client.commands.set(name, command);
   }
 
-  console.log(
-    `Loaded ${commands.length} ${
-      commands.length === 1 ? `command` : `commands`
-    }: ` + client.commands.map((command) => command.data.name).join(', '),
+  logger.info(
+    'Loaded %d %s: [%s]',
+    commands.length,
+    commands.length === 1 ? 'command' : 'commands',
+    commands.map((command) => command.data.name).join(', '),
   );
 }
 
@@ -39,31 +47,60 @@ export async function deployCommands(client: Client): Promise<void> {
     throw new Error('Client is not ready.');
   }
 
-  await client.application.commands.set(
-    client.commands.map((command) => command.data),
-  );
+  try {
+    await client.application.commands.set(
+      client.commands.map((command) => command.data),
+    );
 
-  console.log(`Deployed ${client.commands.size} commands.`);
-}
-
-export async function loadInternalValidations(client: Client): Promise<void> {
-  const validationsDir = join(__dirname, 'validations');
-  const validations: Array<Validation> = await getFilesFromPath(validationsDir);
-
-  for (const validation of validations) {
-    if (!(validation instanceof Validation)) {
-      throw new Error(
-        `Validation ${validation} is not an instance of Validation.`,
-      );
-    }
-
-    client.validations.push(validation);
+    logger.info(
+      'Deployed %d %s.',
+      client.commands.size,
+      client.commands.size === 1 ? 'command' : 'commands',
+    );
+  } catch (err) {
+    logger.error(err);
   }
 }
 
 export async function loadValidations(client: Client): Promise<void> {
-  const validationsDir = client.moduleLoader.validationsDir;
-  const validations: Array<Validation> = await getFiles(validationsDir);
+  const validations: Array<Validation> = await getFiles(
+    client.moduleLoader.validationsDir,
+  );
+
+  if (validations.length) {
+    for (const validation of validations) {
+      if (!(validation instanceof Validation)) {
+        throw new Error(
+          `Validation ${validation} is not an instance of Validation.`,
+        );
+      }
+
+      client.validations.push(validation);
+    }
+
+    logger.info(
+      'Loaded %d %s.',
+      client.validations.length,
+      client.validations.length === 1 ? 'validation' : 'validations',
+    );
+  } else {
+    logger.info('No validations found.');
+  }
+
+  await loadInternalValidations(client);
+}
+
+async function loadInternalValidations(client: Client): Promise<void> {
+  const validations: Array<Validation> = await getFilesFromPath(
+    join(__dirname, 'validations'),
+  );
+
+  if (!validations.length) {
+    logger.info('No internal validations found.');
+    return;
+  }
+
+  let validationCount = 0;
 
   for (const validation of validations) {
     if (!(validation instanceof Validation)) {
@@ -73,11 +110,13 @@ export async function loadValidations(client: Client): Promise<void> {
     }
 
     client.validations.push(validation);
+
+    validationCount++;
   }
 
-  console.log(
-    `Loaded ${client.validations.length} ${
-      client.validations.length === 1 ? `validation` : `validations`
-    }.`,
+  logger.info(
+    'Loaded %d internal %s.',
+    validationCount,
+    validationCount === 1 ? 'validation' : 'validations',
   );
 }
