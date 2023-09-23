@@ -1,7 +1,7 @@
 import { RateLimiterMemory, RateLimiterRes } from 'rate-limiter-flexible';
 
-import Validation from '../../../structures/validation';
-import { createErrorEmbed } from '../../../utils/embeds';
+import Validation from '@/structures/validation';
+import { createErrorEmbed } from '@/utils/embeds';
 
 export default new Validation({
   execute: async (command, interaction, client) => {
@@ -12,7 +12,7 @@ export default new Validation({
     if (!client.limiters.has(command.data.name)) {
       client.limiters.set(
         command.data.name,
-        new RateLimiterMemory(command.rateLimiter)
+        new RateLimiterMemory(command.rateLimiter),
       );
     }
 
@@ -27,7 +27,7 @@ export default new Validation({
       await interaction.reply({
         embeds: [
           createErrorEmbed(
-            `You are being rate limited. Try again in ${timeLeft} seconds.`
+            `You are being rate limited. Try again in ${timeLeft} seconds.`,
           ),
         ],
         ephemeral: true,

@@ -1,7 +1,7 @@
 import { GuildMember } from 'discord.js';
 
-import Validation from '../../../structures/validation';
-import { createErrorEmbed } from '../../../utils/embeds';
+import Validation from '@/structures/validation';
+import { createErrorEmbed } from '@/utils/embeds';
 
 export default new Validation({
   execute: async (command, interaction) => {
@@ -25,7 +25,7 @@ export default new Validation({
       await interaction.reply({
         embeds: [
           createErrorEmbed(
-            `Missing user permissions: ${missingPermissions.join(', ')}`
+            `Missing user permissions: ${missingPermissions.join(', ')}`,
           ),
         ],
       });

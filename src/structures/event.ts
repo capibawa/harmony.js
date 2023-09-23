@@ -1,7 +1,7 @@
 import { ClientEvents } from 'discord.js';
 
 export interface EventOptions<
-  T extends keyof ClientEvents = keyof ClientEvents
+  T extends keyof ClientEvents = keyof ClientEvents,
 > {
   name: T;
   once?: boolean;

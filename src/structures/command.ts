@@ -9,8 +9,8 @@ import {
   UserContextMenuCommandInteraction,
 } from 'discord.js';
 
-import type { RateLimiterOptions } from '../types/rate-limiter-options';
-import Client from './client';
+import type { RateLimiterOptions } from '@/types/rate-limiter-options';
+import Client from '@/structures/client';
 
 export interface CommandOptions {
   data:
@@ -26,7 +26,7 @@ export interface CommandOptions {
       | ContextMenuCommandInteraction
       | MessageContextMenuCommandInteraction
       | UserContextMenuCommandInteraction,
-    client: Client
+    client: Client,
   ): Promise<void>;
 }
 

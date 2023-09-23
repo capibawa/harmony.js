@@ -12,11 +12,11 @@ import {
   loadCommands,
   loadInternalValidations,
   loadValidations,
-} from '../handlers/commands';
-import { loadEvents } from '../handlers/events';
-import { createErrorEmbed } from '../utils/embeds';
-import Command from './command';
-import Validator from './validation';
+} from '@/handlers/commands';
+import { loadEvents } from '@/handlers/events';
+import { createErrorEmbed } from '@/utils/embeds';
+import Command from '@/structures/command';
+import Validator from '@/structures/validation';
 
 export interface ModuleLoaderOptions {
   eventsDir?: string;
@@ -69,7 +69,7 @@ export default class Client extends DiscordClient {
   }
 
   private async handleCommandInteraction(
-    interaction: Interaction
+    interaction: Interaction,
   ): Promise<void> {
     if (
       !interaction.isChatInputCommand() &&

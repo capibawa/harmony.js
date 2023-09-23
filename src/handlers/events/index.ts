@@ -1,6 +1,6 @@
-import Client from '../../structures/client';
-import Event from '../../structures/event';
-import { getFiles } from '../../utils/helpers';
+import Client from '@/structures/client';
+import Event from '@/structures/event';
+import { getFiles } from '@/utils/helpers';
 
 export async function loadEvents(client: Client): Promise<void> {
   const eventsDir = client.moduleLoader.eventsDir;
@@ -20,6 +20,6 @@ export async function loadEvents(client: Client): Promise<void> {
 
   console.log(
     `Loaded ${events.length} ${events.length === 1 ? `event` : `events`}: ` +
-      events.map((event) => event.name).join(', ')
+      events.map((event) => event.name).join(', '),
   );
 }

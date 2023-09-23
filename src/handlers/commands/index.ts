@@ -1,9 +1,9 @@
 import { join } from 'path';
 
-import Client from '../../structures/client';
-import Command from '../../structures/command';
-import Validation from '../../structures/validation';
-import { getFiles, getFilesFromPath } from '../../utils/helpers';
+import Client from '@/structures/client';
+import Command from '@/structures/command';
+import Validation from '@/structures/validation';
+import { getFiles, getFilesFromPath } from '@/utils/helpers';
 
 export async function loadCommands(client: Client): Promise<void> {
   const commandsDir = client.moduleLoader.commandsDir;
@@ -30,7 +30,7 @@ export async function loadCommands(client: Client): Promise<void> {
   console.log(
     `Loaded ${commands.length} ${
       commands.length === 1 ? `command` : `commands`
-    }: ` + client.commands.map((command) => command.data.name).join(', ')
+    }: ` + client.commands.map((command) => command.data.name).join(', '),
   );
 }
 
@@ -40,7 +40,7 @@ export async function deployCommands(client: Client): Promise<void> {
   }
 
   await client.application.commands.set(
-    client.commands.map((command) => command.data)
+    client.commands.map((command) => command.data),
   );
 
   console.log(`Deployed ${client.commands.size} commands.`);
@@ -53,7 +53,7 @@ export async function loadInternalValidations(client: Client): Promise<void> {
   for (const validation of validations) {
     if (!(validation instanceof Validation)) {
       throw new Error(
-        `Validation ${validation} is not an instance of Validation.`
+        `Validation ${validation} is not an instance of Validation.`,
       );
     }
 
@@ -68,7 +68,7 @@ export async function loadValidations(client: Client): Promise<void> {
   for (const validation of validations) {
     if (!(validation instanceof Validation)) {
       throw new Error(
-        `Validation ${validation} is not an instance of Validation.`
+        `Validation ${validation} is not an instance of Validation.`,
       );
     }
 
@@ -78,6 +78,6 @@ export async function loadValidations(client: Client): Promise<void> {
   console.log(
     `Loaded ${client.validations.length} ${
       client.validations.length === 1 ? `validation` : `validations`
-    }.`
+    }.`,
   );
 }

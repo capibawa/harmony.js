@@ -1,5 +1,5 @@
-import Validation from '../../../structures/validation';
-import { createErrorEmbed } from '../../../utils/embeds';
+import Validation from '@/structures/validation';
+import { createErrorEmbed } from '@/utils/embeds';
 
 export default new Validation({
   execute: async (command, interaction) => {
@@ -23,7 +23,7 @@ export default new Validation({
       await interaction.reply({
         embeds: [
           createErrorEmbed(
-            `Missing bot permissions: ${missingPermissions.join(', ')}`
+            `Missing bot permissions: ${missingPermissions.join(', ')}`,
           ),
         ],
       });
