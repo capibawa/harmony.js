@@ -1,5 +1,3 @@
-import { join } from 'path';
-
 import Client from '@/structures/client.js';
 import Validation from '@/structures/validation.js';
 import { getFiles, getFilesFromPath } from '@/utils/helpers.js';
@@ -11,9 +9,7 @@ export async function loadValidations(client: Client): Promise<void> {
 }
 
 async function loadDefaultValidations(client: Client): Promise<void> {
-  const validations = await getFilesFromPath(
-    join(import.meta.dirname, 'validations'),
-  );
+  const validations = await getFilesFromPath(import.meta.dirname);
 
   processValidations(client, validations, 'default');
 }
@@ -38,9 +34,11 @@ function processValidations(
 
   for (const validation of validations) {
     if (!(validation instanceof Validation)) {
-      throw new Error(
-        `Validation ${validation} is not an instance of Validation.`,
+      logger.warn(
+        `Validation ${validation} is not an instance of Validation. Skipping.`,
       );
+
+      continue;
     }
 
     client.validations.push(validation);

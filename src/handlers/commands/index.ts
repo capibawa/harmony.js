@@ -16,17 +16,27 @@ export async function loadCommands(client: Client): Promise<void> {
 
   for (const command of commands) {
     if (!(command instanceof Command)) {
-      throw new Error(`Command ${command} is not an instance of Command.`);
+      logger.warn(
+        `Command ${command} is not an instance of Command. Skipping.`,
+      );
+
+      continue;
     }
 
     if (!command.data) {
-      throw new Error(`Command ${command} does not have a data property.`);
+      logger.warn(
+        `Command ${command} does not have a data property. Skipping.`,
+      );
+
+      continue;
     }
 
     const name = command.data.name.toLowerCase();
 
     if (client.commands.has(name)) {
-      throw new Error(`Command ${name} already exists.`);
+      logger.warn(`Command ${name} already exists. Skipping.`);
+
+      continue;
     }
 
     client.commands.set(name, command);

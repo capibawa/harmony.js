@@ -13,7 +13,8 @@ export async function loadEvents(client: Client): Promise<void> {
 
   for (const event of events) {
     if (!(event instanceof Event)) {
-      throw new Error(`Event ${event} is not an instance of Event.`);
+      logger.warn(`Event ${event} is not an instance of Event. Skipping.`);
+      continue;
     }
 
     if (event.once) {

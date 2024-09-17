@@ -38,7 +38,11 @@ export async function getFilesFromPath(path: string): Promise<any[]> {
     for (const item of dirents) {
       const filePath = join(path, item.name);
 
-      if (item.isFile() && item.name.endsWith('.js')) {
+      if (
+        item.isFile() &&
+        item.name !== 'index.js' &&
+        (item.name.endsWith('.js') || item.name.endsWith('.ts'))
+      ) {
         items.push(filePath);
       } else if (item.isDirectory()) {
         items.push(...(await getFilesFromPath(filePath)));
