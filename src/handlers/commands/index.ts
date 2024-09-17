@@ -7,7 +7,7 @@ import { getFiles, getFilesFromPath } from '@/utils/helpers.js';
 import logger from '@/utils/logger.js';
 
 export async function loadCommands(client: Client): Promise<void> {
-  const commands: Array<Command> = await getFiles(client.harmony.commandsDir);
+  const commands: Array<Command> = await getFiles(client.harmony.commandsDir!);
 
   if (!commands.length) {
     logger.info('No commands found.');
@@ -64,7 +64,7 @@ export async function loadValidations(client: Client): Promise<void> {
   await loadDefaultValidations(client);
 
   const validations: Array<Validation> = await getFiles(
-    client.harmony.validationsDir,
+    client.harmony.validationsDir!,
   );
 
   if (validations.length > 0) {
