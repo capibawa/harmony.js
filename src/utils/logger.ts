@@ -1,14 +1,7 @@
-import { pino } from 'pino';
-
-const transport = pino.transport({
-  target: 'pino-pretty',
-  options: {
-    colorize: true,
-    ignore: 'pid,hostname',
-    translateTime: 'SYS:yyyy-mm-dd HH:MM:ss',
-  },
-});
-
-const logger = pino(transport);
+const logger = {
+  info: console.log,
+  warn: console.warn,
+  error: console.error,
+};
 
 export default logger;

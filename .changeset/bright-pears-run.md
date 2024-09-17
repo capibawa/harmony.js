@@ -2,4 +2,4 @@
 '@capibawa/harmony.js': minor
 ---
 
-remove pino dependency
+Remove pino dependency
