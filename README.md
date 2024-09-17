@@ -14,7 +14,7 @@ npm install @capibawa/harmony.js
 
 ### Client
 
-Harmony.js works by extending the `Client` class from Discord.js. You can pass in a `harmony` object to the constructor to configure the directory paths for events, commands, and validations.
+harmony.js works by extending the `Client` class from discord.js. You can pass in a `harmony` object to the constructor to configure the directory paths for events, commands, and validations.
 
 ```ts
 import { Client } from '@capibawa/harmony.js';
@@ -33,7 +33,7 @@ client.initialize(token); // replaces client.login(token)
 
 ### Events
 
-Events are loaded from the `events` directory by default. Each file should export a default `Event` object.
+Events are loaded from the `events` directory by default. Each file should export a default `Event` object. Upon client initialization, the events will automatically be registered and executed.
 
 ```ts
 import { Client, Events } from 'discord.js';
@@ -54,7 +54,7 @@ export default new Event({
 
 ### Commands
 
-Commands are loaded from the `commands` directory by default. Each file should export a default `Command` object.
+Commands are loaded from the `commands` directory by default. Each file should export a default `Command` object. Upon client initialization, the commands will automatically be registered, deployed and executed.
 
 ```ts
 import {
