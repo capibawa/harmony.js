@@ -17,6 +17,7 @@ npm install @capibawa/harmony.js
 harmony.js works by extending the `Client` class from discord.js. You can pass in a `harmony` object to the constructor to configure the directory paths for events, commands, and validations.
 
 ```ts
+import { GatewayIntentBits } from 'discord.js';
 import { Client } from '@capibawa/harmony.js';
 
 const client = new Client({
