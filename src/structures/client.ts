@@ -44,9 +44,6 @@ export default class Client extends DiscordClient {
 
     super(clientOptions);
 
-    console.log('default', this.harmony);
-    console.log('user', harmonyOptions);
-
     if (harmonyOptions) {
       this.harmony = { ...this.harmony, ...harmonyOptions };
     }

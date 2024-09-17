@@ -10,13 +10,12 @@ export async function getFiles(dir: string): Promise<Array<any>> {
       return [];
     }
 
-    for (const item of items) {
-      delete require.cache[require.resolve(item)];
-    }
-
-    const files = (
-      await Promise.all(items.map(async (item) => await import(item)))
-    ).map((file) => file.default);
+    const files = await Promise.all(
+      items.map(async (item) => {
+        const module = await import(item);
+        return module.default;
+      }),
+    );
 
     return files;
   } catch (err) {
@@ -34,7 +33,7 @@ export async function getFilesFromPath(path: string): Promise<Array<any>> {
       return [];
     }
 
-    const items = [];
+    const items: string[] = [];
 
     for (const item of dirents) {
       const filePath = join(path, item.name);
@@ -46,9 +45,12 @@ export async function getFilesFromPath(path: string): Promise<Array<any>> {
       }
     }
 
-    const files = (
-      await Promise.all(items.map(async (item) => await import(item)))
-    ).map((file) => file.default);
+    const files = await Promise.all(
+      items.map(async (item) => {
+        const module = await import(item);
+        return module.default;
+      }),
+    );
 
     return files;
   } catch (err) {
