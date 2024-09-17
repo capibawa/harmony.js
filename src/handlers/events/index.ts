@@ -4,9 +4,9 @@ import { getFiles } from '@/utils/helpers.js';
 import logger from '@/utils/logger.js';
 
 export async function loadEvents(client: Client): Promise<void> {
-  const events: Array<Event> = await getFiles(client.harmony.eventsDir);
+  const events: Event[] = await getFiles(client.harmony.eventsDir);
 
-  if (!events.length) {
+  if (events.length === 0) {
     logger.info('No events found.');
     return;
   }

@@ -2,7 +2,7 @@ import { readdirSync } from 'fs';
 import { join } from 'path';
 import glob from 'tiny-glob';
 
-export async function getFiles(dir: string): Promise<Array<any>> {
+export async function getFiles(dir: string): Promise<any[]> {
   try {
     const items = await glob(`${dir}/**/*.{js,ts}`, { absolute: true });
 
@@ -25,7 +25,7 @@ export async function getFiles(dir: string): Promise<Array<any>> {
   }
 }
 
-export async function getFilesFromPath(path: string): Promise<Array<any>> {
+export async function getFilesFromPath(path: string): Promise<any[]> {
   try {
     const dirents = readdirSync(path, { withFileTypes: true });
 

@@ -1,33 +1,17 @@
 import {
   ChatInputCommandInteraction,
-  ContextMenuCommandBuilder,
-  ContextMenuCommandInteraction,
-  MessageContextMenuCommandInteraction,
   SlashCommandBuilder,
-  UserContextMenuCommandInteraction,
   type PermissionResolvable,
-  type SlashCommandSubcommandsOnlyBuilder,
 } from 'discord.js';
 
 import type { RateLimiterOptions } from '@/types/rate-limiter-options.js';
-import Client from '@/structures/client.js';
 
 export interface CommandOptions {
-  data:
-    | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
-    | SlashCommandSubcommandsOnlyBuilder
-    | ContextMenuCommandBuilder;
+  data: SlashCommandBuilder;
   userPermissions?: PermissionResolvable;
   botPermissions?: PermissionResolvable;
   rateLimiter?: RateLimiterOptions;
-  execute(
-    interaction:
-      | ChatInputCommandInteraction
-      | ContextMenuCommandInteraction
-      | MessageContextMenuCommandInteraction
-      | UserContextMenuCommandInteraction,
-    client: Client,
-  ): Promise<void>;
+  execute(interaction: ChatInputCommandInteraction): Promise<void>;
 }
 
 export default class Command {

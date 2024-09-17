@@ -1,15 +1,15 @@
-import { join } from 'path';
+import type { Interaction } from 'discord.js';
 
 import Client from '@/structures/client.js';
 import Command from '@/structures/command.js';
-import Validation from '@/structures/validation.js';
-import { getFiles, getFilesFromPath } from '@/utils/helpers.js';
+import { createErrorEmbed } from '@/utils/embeds.js';
+import { getFiles } from '@/utils/helpers.js';
 import logger from '@/utils/logger.js';
 
 export async function loadCommands(client: Client): Promise<void> {
-  const commands: Array<Command> = await getFiles(client.harmony.commandsDir);
+  const commands: Command[] = await getFiles(client.harmony.commandsDir);
 
-  if (!commands.length) {
+  if (commands.length === 0) {
     logger.info('No commands found.');
     return;
   }
@@ -60,61 +60,56 @@ export async function deployCommands(client: Client): Promise<void> {
   }
 }
 
-export async function loadValidations(client: Client): Promise<void> {
-  await loadDefaultValidations(client);
-
-  const validations: Array<Validation> = await getFiles(
-    client.harmony.validationsDir,
-  );
-
-  if (validations.length > 0) {
-    for (const validation of validations) {
-      if (!(validation instanceof Validation)) {
-        throw new Error(
-          `Validation ${validation} is not an instance of Validation.`,
-        );
-      }
-
-      client.validations.push(validation);
-    }
-
-    logger.info(
-      'Loaded %d %s.',
-      client.validations.length,
-      client.validations.length === 1 ? 'validation' : 'validations',
-    );
-  } else {
-    logger.info('No validations found.');
-  }
-}
-
-async function loadDefaultValidations(client: Client): Promise<void> {
-  const validations: Array<Validation> = await getFilesFromPath(
-    join(import.meta.dirname, 'validations'),
-  );
-
-  if (validations.length === 0) {
-    logger.info('No internal validations found.');
+export async function executeCommand(
+  client: Client,
+  interaction: Interaction,
+): Promise<void> {
+  // TODO: Add support for different interaction types.
+  if (!interaction.isChatInputCommand()) {
     return;
   }
 
-  let validationCount = 0;
+  const commandName = interaction.commandName.toLowerCase();
+  const command = client.commands.get(commandName);
 
-  for (const validation of validations) {
-    if (!(validation instanceof Validation)) {
-      throw new Error(
-        `Validation ${validation} is not an instance of Validation.`,
-      );
-    }
-
-    client.validations.push(validation);
-
-    validationCount++;
+  if (!command) {
+    logger.error(`No command matching ${commandName} was found.`);
+    return;
   }
 
-  logger.info(
-    'Loaded %d default %s.',
-    validationCount,
-    validationCount === 1 ? 'validation' : 'validations',
-  );
+  let isValid = true;
+
+  for (const validation of client.validations) {
+    isValid = await validation.execute(command, interaction, client);
+
+    if (!isValid) {
+      break;
+    }
+  }
+
+  if (!isValid) {
+    const embed = createErrorEmbed('This command cannot be executed.');
+
+    if (!interaction.replied && !interaction.deferred) {
+      await interaction.reply({ embeds: [embed], ephemeral: true });
+    } else if (interaction.deferred) {
+      await interaction.editReply({ embeds: [embed] });
+    }
+
+    return;
+  }
+
+  try {
+    await command.execute(interaction);
+  } catch (err) {
+    logger.error(err);
+
+    const embed = createErrorEmbed('Unknown error.');
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp({ embeds: [embed], ephemeral: true });
+    } else {
+      await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+  }
 }
