@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.2.2
+
+### Patch Changes
+
+- d836098: Log options
+
 ## 0.2.1
 
 ### Patch Changes
