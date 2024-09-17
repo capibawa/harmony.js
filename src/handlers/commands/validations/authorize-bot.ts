@@ -1,5 +1,5 @@
-import Validation from '@/structures/validation';
-import { createErrorEmbed } from '@/utils/embeds';
+import Validation from '@/structures/validation.js';
+import { createErrorEmbed } from '@/utils/embeds.js';
 
 export default new Validation({
   execute: async (command, interaction) => {

@@ -5,8 +5,8 @@ import {
   UserContextMenuCommandInteraction,
 } from 'discord.js';
 
-import Client from '@/structures/client';
-import Command from '@/structures/command';
+import Client from '@/structures/client.js';
+import Command from '@/structures/command.js';
 
 export interface ValidationOptions {
   execute(

@@ -1,45 +1,55 @@
 {
-  "name": "@biscxit/discord-module-loader",
-  "version": "0.5.0",
-  "description": "Dynamically load and handle modules for Discord.js.",
-  "author": {
-    "name": "biscxit",
-    "url": "https://github.com/biscxit"
+  "name": "harmony.js",
+  "version": "0.1.0",
+  "description": "A discord.js companion package to ease bot application development",
+  "homepage": "https://github.com/capibawa/harmony.js",
+  "bugs": {
+    "url": "https://github.com/capibawa/harmony.js/issues"
   },
+  "author": "Capibawa <capibawa@proton.me>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/biscxit/discord-module-loader.git"
+    "url": "git+https://github.com/capibawa/harmony.js.git"
   },
   "license": "MIT",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "rimraf lib && tsc && tsc-alias",
-    "lint": "prettier --check . && eslint --format=pretty src",
-    "format": "prettier --write . && eslint --fix --format=pretty src",
-    "test": "echo \"Error: no test specified\"",
-    "version": "npm run build"
+    "ci": "pnpm build && pnpm check-exports && pnpm lint && pnpm format:check",
+    "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
+    "lint": "eslint src",
+    "format:check": "prettier \"./src/**/**.ts\" --check",
+    "format": "prettier --write \"./src/**/**.ts\" --write",
+    "test": "vitest run",
+    "local-release": "changeset version && changeset publish",
+    "prepublishOnly": "pnpm run ci"
   },
   "dependencies": {
-    "discord.js": "^14.13.0",
-    "pino": "^8.15.1",
-    "rate-limiter-flexible": "^3.0.0",
+    "discord.js": "^14.16.2",
+    "pino": "^9.4.0",
+    "rate-limiter-flexible": "^5.0.3",
     "tiny-glob": "^0.2.9"
   },
   "devDependencies": {
-    "@types/node": "^20.6.3",
-    "@typescript-eslint/eslint-plugin": "^6.7.2",
-    "@typescript-eslint/parser": "^6.7.2",
-    "eslint": "^8.50.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-formatter-pretty": "^5.0.0",
-    "pino-pretty": "^10.2.0",
-    "prettier": "^3.0.3",
-    "rimraf": "^5.0.1",
-    "tsc-alias": "^1.8.8",
-    "typescript": "^5.2.2"
+    "@arethetypeswrong/cli": "^0.16.2",
+    "@changesets/cli": "^2.27.8",
+    "@eslint/js": "^9.10.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
+    "@types/eslint-config-prettier": "^6.11.3",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^22.5.5",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "pino-pretty": "^11.2.2",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.6.0"
   }
 }

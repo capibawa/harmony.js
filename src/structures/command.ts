@@ -3,14 +3,14 @@ import {
   ContextMenuCommandBuilder,
   ContextMenuCommandInteraction,
   MessageContextMenuCommandInteraction,
-  PermissionResolvable,
   SlashCommandBuilder,
-  SlashCommandSubcommandsOnlyBuilder,
   UserContextMenuCommandInteraction,
+  type PermissionResolvable,
+  type SlashCommandSubcommandsOnlyBuilder,
 } from 'discord.js';
 
-import type { RateLimiterOptions } from '@/types/rate-limiter-options';
-import Client from '@/structures/client';
+import type { RateLimiterOptions } from '@/types/rate-limiter-options.js';
+import Client from '@/structures/client.js';
 
 export interface CommandOptions {
   data:

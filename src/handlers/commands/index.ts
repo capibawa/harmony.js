@@ -1,15 +1,13 @@
 import { join } from 'path';
 
-import Client from '@/structures/client';
-import Command from '@/structures/command';
-import Validation from '@/structures/validation';
-import { getFiles, getFilesFromPath } from '@/utils/helpers';
-import logger from '@/utils/logger';
+import Client from '@/structures/client.js';
+import Command from '@/structures/command.js';
+import Validation from '@/structures/validation.js';
+import { getFiles, getFilesFromPath } from '@/utils/helpers.js';
+import logger from '@/utils/logger.js';
 
 export async function loadCommands(client: Client): Promise<void> {
-  const commands: Array<Command> = await getFiles(
-    client.moduleLoader.commandsDir,
-  );
+  const commands: Array<Command> = await getFiles(client.harmony.commandsDir);
 
   if (!commands.length) {
     logger.info('No commands found.');
@@ -63,11 +61,13 @@ export async function deployCommands(client: Client): Promise<void> {
 }
 
 export async function loadValidations(client: Client): Promise<void> {
+  await loadDefaultValidations(client);
+
   const validations: Array<Validation> = await getFiles(
-    client.moduleLoader.validationsDir,
+    client.harmony.validationsDir,
   );
 
-  if (validations.length) {
+  if (validations.length > 0) {
     for (const validation of validations) {
       if (!(validation instanceof Validation)) {
         throw new Error(
@@ -86,16 +86,14 @@ export async function loadValidations(client: Client): Promise<void> {
   } else {
     logger.info('No validations found.');
   }
-
-  await loadInternalValidations(client);
 }
 
-async function loadInternalValidations(client: Client): Promise<void> {
+async function loadDefaultValidations(client: Client): Promise<void> {
   const validations: Array<Validation> = await getFilesFromPath(
     join(__dirname, 'validations'),
   );
 
-  if (!validations.length) {
+  if (validations.length === 0) {
     logger.info('No internal validations found.');
     return;
   }
@@ -115,7 +113,7 @@ async function loadInternalValidations(client: Client): Promise<void> {
   }
 
   logger.info(
-    'Loaded %d internal %s.',
+    'Loaded %d default %s.',
     validationCount,
     validationCount === 1 ? 'validation' : 'validations',
   );

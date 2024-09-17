@@ -1,35 +1,35 @@
 import {
   Collection,
   Client as DiscordClient,
-  ClientOptions as DiscordClientOptions,
   Events,
-  Interaction,
+  type ClientOptions as DiscordClientOptions,
+  type Interaction,
 } from 'discord.js';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
+import Command from '@/structures/command.js';
+import Validation from '@/structures/validation.js';
 import {
   deployCommands,
   loadCommands,
   loadValidations,
-} from '@/handlers/commands';
-import { loadEvents } from '@/handlers/events';
-import Command from '@/structures/command';
-import Validation from '@/structures/validation';
-import { createErrorEmbed } from '@/utils/embeds';
-import logger from '@/utils/logger';
+} from '@/handlers/commands/index.js';
+import { loadEvents } from '@/handlers/events/index.js';
+import { createErrorEmbed } from '@/utils/embeds.js';
+import logger from '@/utils/logger.js';
 
-export interface ModuleLoaderOptions {
+export interface HarmonyOptions {
   eventsDir?: string;
   commandsDir?: string;
   validationsDir?: string;
 }
 
 export interface ClientOptions extends DiscordClientOptions {
-  moduleLoader?: ModuleLoaderOptions;
+  harmony?: HarmonyOptions;
 }
 
 export default class Client extends DiscordClient {
-  moduleLoader: Required<ModuleLoaderOptions> = {
+  harmony: Required<HarmonyOptions> = {
     eventsDir: 'events',
     commandsDir: 'commands',
     validationsDir: 'validations',
@@ -40,12 +40,12 @@ export default class Client extends DiscordClient {
   validations: Array<Validation> = [];
 
   constructor(options: ClientOptions) {
-    const { moduleLoader: moduleLoaderOptions, ...clientOptions } = options;
+    const { harmony: harmonyOptions, ...clientOptions } = options;
 
     super(clientOptions);
 
-    if (moduleLoaderOptions) {
-      this.moduleLoader = { ...this.moduleLoader, ...moduleLoaderOptions };
+    if (harmonyOptions) {
+      this.harmony = { ...this.harmony, ...harmonyOptions };
     }
 
     this.once(Events.ClientReady, async () => {

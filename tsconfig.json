@@ -1,22 +1,27 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "discord-module-loader",
   "compilerOptions": {
     "target": "es2022",
-    "lib": ["es2022"],
+    "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "module": "commonjs",
-    "declaration": true,
+    "module": "nodenext",
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "outDir": "dist",
     "rootDir": "src",
-    "outDir": "lib",
+    "declaration": true,
+    "lib": ["es2022"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["example"]
+  "exclude": ["node_modules", "example"]
 }

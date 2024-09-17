@@ -1,10 +1,10 @@
-import Client from '@/structures/client';
-import Event from '@/structures/event';
-import { getFiles } from '@/utils/helpers';
-import logger from '@/utils/logger';
+import Client from '@/structures/client.js';
+import Event from '@/structures/event.js';
+import { getFiles } from '@/utils/helpers.js';
+import logger from '@/utils/logger.js';
 
 export async function loadEvents(client: Client): Promise<void> {
-  const events: Array<Event> = await getFiles(client.moduleLoader.eventsDir);
+  const events: Array<Event> = await getFiles(client.harmony.eventsDir);
 
   if (!events.length) {
     logger.info('No events found.');
