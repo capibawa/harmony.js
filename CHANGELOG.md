@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.4.0
+
+### Minor Changes
+
+- d87660f: Remove client parameter from `command.execute`
+
 ## 0.3.0
 
 ### Minor Changes
