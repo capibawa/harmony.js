@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.3.0
+
+### Minor Changes
+
+- 756108d: Fix "require is not defined"
+
 ## 0.2.2
 
 ### Patch Changes
