@@ -29,7 +29,7 @@ export interface ClientOptions extends DiscordClientOptions {
 }
 
 export default class Client extends DiscordClient {
-  harmony: HarmonyOptions = {
+  harmony: Required<HarmonyOptions> = {
     eventsDir: 'events',
     commandsDir: 'commands',
     validationsDir: 'validations',
@@ -44,7 +44,12 @@ export default class Client extends DiscordClient {
 
     super(clientOptions);
 
-    this.harmony = { ...this.harmony, ...harmonyOptions };
+    console.log('default', this.harmony);
+    console.log('user', harmonyOptions);
+
+    if (harmonyOptions) {
+      this.harmony = { ...this.harmony, ...harmonyOptions };
+    }
 
     this.once(Events.ClientReady, async () => {
       await deployCommands(this);
