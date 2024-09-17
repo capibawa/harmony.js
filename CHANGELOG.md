@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.5.1
+
+### Patch Changes
+
+- 2a4153c: Fix default validations not being loaded (again)
+
 ## 0.5.0
 
 ### Minor Changes
