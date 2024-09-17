@@ -20,6 +20,8 @@ export async function getFiles(dir: string): Promise<Array<any>> {
 
     return files;
   } catch (err) {
+    console.error(`Error while importing files from ${dir}`, err);
+
     return [];
   }
 }
@@ -50,6 +52,8 @@ export async function getFilesFromPath(path: string): Promise<Array<any>> {
 
     return files;
   } catch (err) {
+    console.error(`Error while importing files from ${path}`, err);
+
     return [];
   }
 }
