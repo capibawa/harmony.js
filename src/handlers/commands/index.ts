@@ -90,7 +90,7 @@ export async function loadValidations(client: Client): Promise<void> {
 
 async function loadDefaultValidations(client: Client): Promise<void> {
   const validations: Array<Validation> = await getFilesFromPath(
-    join(__dirname, 'validations'),
+    join(import.meta.dirname, 'validations'),
   );
 
   if (validations.length === 0) {
