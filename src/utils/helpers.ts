@@ -25,6 +25,7 @@ export async function getFiles(dir: string): Promise<any[]> {
   }
 }
 
+// This could be refactored as it's only being used to load default validations.
 export async function getFilesFromPath(path: string): Promise<any[]> {
   try {
     const dirents = readdirSync(path, { withFileTypes: true });
@@ -41,7 +42,7 @@ export async function getFilesFromPath(path: string): Promise<any[]> {
       if (
         item.isFile() &&
         item.name !== 'index.js' &&
-        (item.name.endsWith('.js') || item.name.endsWith('.ts'))
+        item.name.endsWith('.js')
       ) {
         items.push(filePath);
       } else if (item.isDirectory()) {
