@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.2.1
+
+### Patch Changes
+
+- 55418c6: Simplify option merge logic
+
 ## 0.2.0
 
 ### Minor Changes
