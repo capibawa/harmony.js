@@ -19,7 +19,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf lib && tsc && tsc-alias",
+    "build": "rimraf dist && tsc && tsc-alias",
     "ci": "pnpm build && pnpm check-exports && pnpm lint && pnpm format:check",
     "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
     "lint": "eslint src",

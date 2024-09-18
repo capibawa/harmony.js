@@ -28,7 +28,9 @@ export default class Command {
    * The command definition object used to register the command with Discord.
    * It defines the command's name, description, options, and other properties.
    */
-  data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
+  data:
+    | Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>
+    | SlashCommandSubcommandsOnlyBuilder;
 
   /**
    * The function that gets executed whenever the command is invoked by a member.
