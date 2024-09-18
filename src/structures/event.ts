@@ -24,7 +24,7 @@ export default class Event<T extends keyof ClientEvents = keyof ClientEvents> {
    * The function that gets executed whenever the event is emitted.
    * It receives the client instance and any additional arguments passed by the event.
    */
-  execute: (args: EventArgs<T>) => Promise<void>;
+  execute: (args: EventArgs<T>) => void | Promise<void>;
 
   /**
    * Creates a new instance of the Event class.
