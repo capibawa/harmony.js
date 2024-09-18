@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.6.1
+
+### Patch Changes
+
+- 8b303eb: Fix event execute return type
+
 ## 0.6.0
 
 ### Minor Changes
