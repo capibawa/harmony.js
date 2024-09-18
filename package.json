@@ -1,6 +1,6 @@
 {
   "name": "@capibawa/harmony.js",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A discord.js companion package to ease bot application development",
   "homepage": "https://github.com/capibawa/harmony.js",
   "bugs": {

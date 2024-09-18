@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.6.2
+
+### Patch Changes
+
+- 2ae4282: Fix command data type
+
 ## 0.6.1
 
 ### Patch Changes
