@@ -31,11 +31,10 @@
   },
   "dependencies": {
     "discord.js": "^14.16.2",
-    "rate-limiter-flexible": "^5.0.3",
     "tiny-glob": "^0.2.9"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.16.2",
+    "@arethetypeswrong/cli": "^0.16.4",
     "@changesets/cli": "^2.27.8",
     "@eslint/js": "^9.10.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",

@@ -2,7 +2,6 @@ import type { Interaction } from 'discord.js';
 
 import Client from '@/structures/client.js';
 import Command from '@/structures/command.js';
-import { createErrorEmbed } from '@/utils/embeds.js';
 import { getFiles } from '@/utils/helpers.js';
 import logger from '@/utils/logger.js';
 
@@ -23,23 +22,25 @@ export async function loadCommands(client: Client): Promise<void> {
       continue;
     }
 
-    if (!command.data) {
+    if (command.disabled) {
+      logger.warn(`Command ${command} is disabled. Skipping.`);
+      continue;
+    }
+
+    if (!command.data || !command.execute) {
       logger.warn(
-        `Command ${command} does not have a data property. Skipping.`,
+        `Command ${command} is missing a "data" or "execute" property. Skipping.`,
       );
 
       continue;
     }
 
-    const name = command.data.name.toLowerCase();
+    // if (client.commands.has(command.data.name)) {
+    //   logger.warn(`Command ${command.data.name} already exists. Skipping.`);
+    //   continue;
+    // }
 
-    if (client.commands.has(name)) {
-      logger.warn(`Command ${name} already exists. Skipping.`);
-
-      continue;
-    }
-
-    client.commands.set(name, command);
+    client.commands.set(command.data.name, command);
   }
 
   logger.info(
@@ -79,47 +80,53 @@ export async function executeCommand(
     return;
   }
 
-  const commandName = interaction.commandName.toLowerCase();
-  const command = client.commands.get(commandName);
+  const command = client.commands.get(interaction.commandName);
 
   if (!command) {
-    logger.error(`No command matching ${commandName} was found.`);
+    logger.error(`No command matching ${interaction.commandName} was found.`);
     return;
   }
 
-  let isValid = true;
+  let validated = true;
 
   for (const validation of client.validations) {
-    isValid = await validation.execute(command, interaction, client);
+    validated = await validation.execute({ client, command, interaction });
 
-    if (!isValid) {
+    if (!validated) {
       break;
     }
   }
 
-  if (!isValid) {
-    const embed = createErrorEmbed('This command cannot be executed.');
-
+  if (!validated) {
     if (!interaction.replied && !interaction.deferred) {
-      await interaction.reply({ embeds: [embed], ephemeral: true });
+      await interaction.reply({
+        content: 'You are not allowed to execute this command.',
+        ephemeral: true,
+      });
     } else if (interaction.deferred) {
-      await interaction.editReply({ embeds: [embed] });
+      await interaction.editReply({
+        content: 'You are not allowed to execute this command.',
+      });
     }
 
     return;
   }
 
   try {
-    await command.execute(interaction);
+    await command.execute({ client, interaction });
   } catch (err) {
     logger.error(err);
 
-    const embed = createErrorEmbed('Unknown error.');
-
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({ embeds: [embed], ephemeral: true });
+      await interaction.followUp({
+        content: 'There was an error while executing this command!',
+        ephemeral: true,
+      });
     } else {
-      await interaction.reply({ embeds: [embed], ephemeral: true });
+      await interaction.reply({
+        content: 'There was an error while executing this command!',
+        ephemeral: true,
+      });
     }
   }
 }
