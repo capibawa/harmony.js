@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.6.0
+
+### Minor Changes
+
+- f57c404: Restructured all classes
+
 ## 0.5.1
 
 ### Patch Changes
