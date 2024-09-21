@@ -4,6 +4,7 @@ import {
   Events,
   type ClientOptions as DiscordClientOptions,
 } from 'discord.js';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 import Command from '@/structures/command.js';
 import Validation from '@/structures/validation.js';
@@ -63,9 +64,9 @@ export default class Client extends DiscordClient {
   validations: Validation[] = [];
 
   /**
-   * A collection of cooldowns for commands.
+   * A collection of command rate limiters.
    */
-  cooldowns: Collection<string, Collection<string, number>> = new Collection();
+  rateLimiters: Collection<string, RateLimiterMemory> = new Collection();
 
   /**
    * Creates a new instance of the Client class.

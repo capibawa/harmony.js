@@ -2,7 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/@capibawa/harmony.js)](https://www.npmjs.com/package/@capibawa/harmony.js)
 
-Dynamically load events, commands and validations for discord.js. Supports both JavaScript and TypeScript environments.
+## About
+
+harmony.js is a simplistic framework for building Discord bots using discord.js. It provides a simple and easy-to-use API for loading and building events, commands, and validations.
 
 ## Installation
 
@@ -17,8 +19,7 @@ npm install @capibawa/harmony.js
 harmony.js works by extending the `Client` class from discord.js. You can pass in a `harmony` object to the constructor to configure the directory paths for events, commands, and validations.
 
 ```ts
-import { GatewayIntentBits } from 'discord.js';
-import { Client } from '@capibawa/harmony.js';
+import { Client, GatewayIntentBits } from '@capibawa/harmony.js';
 
 const client = new Client({
   harmony: {
@@ -34,58 +35,85 @@ client.initialize(token); // replaces client.login(token)
 
 ### Events
 
-Events are loaded from the `events` directory by default. Each file should export a default `Event` object. Upon client initialization, the events will automatically be registered and executed.
+Events are loaded from the `events` directory by default. Each file should export a default `Event` object.
 
 ```ts
-import { Client, Events } from 'discord.js';
-import { Event } from '@capibawa/harmony.js';
+import { Event, Events } from '@capibawa/harmony.js';
 
 export default new Event({
   name: Events.ClientReady,
   once: true,
-  execute: (client: Client) => {
+  execute: ({ client }) => {
     if (!client.user) {
       return;
     }
 
-    console.log(`Ready! Logged in as ${client.user.tag}`);
+    console.log(`Ready! Logged in as ${client.user.tag}.`);
   },
 });
 ```
 
 ### Commands
 
-Commands are loaded from the `commands` directory by default. Each file should export a default `Command` object. Upon client initialization, the commands will automatically be registered, deployed and executed.
+Commands are loaded from the `commands` directory by default. Each file should export a default `Command` object.
+
+harmony.js will automatically deploy your commands upon client initialization.
 
 ```ts
-import {
-  ChatInputCommandInteraction,
-  Colors,
-  EmbedBuilder,
-  SlashCommandBuilder,
-} from 'discord.js';
-import { Command } from '@capibawa/harmony.js';
+import { Command, SlashCommandBuilder } from '@capibawa/harmony.js';
 
 export default new Command({
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Replies with Pong!'),
-  execute: async (interaction: ChatInputCommandInteraction) => {
-    const embed = new EmbedBuilder()
-      .setColor(Colors.Green)
-      .setTitle('Pong!')
-      .setDescription('Measuring ping...');
-
+    .setDescription('Measures the bot latency.'),
+  execute: async ({ interaction }) => {
     const message = await interaction.reply({
-      embeds: [embed],
+      content: 'Measuring ping...',
       fetchReply: true,
     });
 
     const ping = message.createdTimestamp - interaction.createdTimestamp;
 
-    await interaction.editReply({
-      embeds: [embed.setDescription(`Took ${ping} ms.`)],
+    await interaction.editReply({ content: `Pong! Took ${ping} ms.` });
+  },
+});
+```
+
+### Validations
+
+Validations are used to determine whether a command can be executed or not. All registered validations are executed in order until one of them returns `false`. If none of the validations return `false`, the command will be executed.
+
+Validations are loaded from the `validations` directory by default. Each file should export a default `Validation` object.
+
+```ts
+import { Validation } from '@capibawa/harmony.js';
+
+const WHITELISTED_COMMANDS = ['ping'];
+const WHITELISTED_USER_IDS = [
+  'EXAMPLE_USER_ID_1',
+  'EXAMPLE_USER_ID_2',
+  'EXAMPLE_USER_ID_3',
+];
+
+export default new Validation({
+  execute: async ({ command, interaction }) => {
+    const commandName = command.data.name;
+    const userId = interaction.member?.user?.id;
+
+    if (
+      userId &&
+      WHITELISTED_COMMANDS.includes(commandName) &&
+      WHITELISTED_USER_IDS.includes(userId)
+    ) {
+      return true;
+    }
+
+    await interaction.reply({
+      content: 'You are not allowed to execute this command.',
+      ephemeral: true,
     });
+
+    return false;
   },
 });
 ```

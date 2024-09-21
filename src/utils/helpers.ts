@@ -42,7 +42,9 @@ export async function getFilesFromPath(path: string): Promise<any[]> {
       if (
         item.isFile() &&
         item.name !== 'index.js' &&
-        item.name.endsWith('.js')
+        item.name !== 'index.ts' &&
+        (item.name.endsWith('.js') || item.name.endsWith('.ts')) &&
+        !item.name.startsWith('.d.ts')
       ) {
         items.push(filePath);
       } else if (item.isDirectory()) {

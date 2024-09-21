@@ -45,20 +45,16 @@ export async function loadCommands(client: Client): Promise<void> {
 
   logger.info(
     'Loaded %d %s: [%s]',
-    commands.length,
-    commands.length === 1 ? 'command' : 'commands',
-    commands.map((command) => command.data.name).join(', '),
+    client.commands.size,
+    client.commands.size === 1 ? 'command' : 'commands',
+    client.commands.map((command) => command.data.name).join(', '),
   );
 }
 
 export async function deployCommands(client: Client): Promise<void> {
-  if (!client.isReady()) {
-    throw new Error('Client is not ready.');
-  }
-
   try {
-    await client.application.commands.set(
-      client.commands.map((command) => command.data),
+    await client.application!.commands.set(
+      client.commands.map((command) => command.data.toJSON()),
     );
 
     logger.info(

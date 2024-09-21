@@ -3,6 +3,7 @@ import type {
   SlashCommandBuilder,
   SlashCommandSubcommandsOnlyBuilder,
 } from 'discord.js';
+import type { IRateLimiterOptions } from 'rate-limiter-flexible';
 
 import Client from '@/structures/client.js';
 
@@ -19,10 +20,10 @@ export default class Command {
   disabled?: boolean;
 
   /**
-   * The cooldown duration in seconds for the command.
-   * If set, the member can only execute the command again after the specified duration has passed.
+   * The rate limiter options for the command.
+   * If set, the member can only execute the command again after the specified number of actions.
    */
-  cooldown?: number;
+  rateLimiter?: IRateLimiterOptions;
 
   /**
    * The command definition object used to register the command with Discord.
@@ -43,7 +44,7 @@ export default class Command {
    */
   constructor(options: Command) {
     this.disabled = options.disabled;
-    this.cooldown = options.cooldown;
+    this.rateLimiter = options.rateLimiter;
     this.data = options.data;
     this.execute = options.execute;
   }

@@ -24,10 +24,12 @@ export async function loadEvents(client: Client): Promise<void> {
     }
   }
 
+  const eventNames = client.eventNames();
+
   logger.info(
     'Loaded %d %s: [%s]',
-    events.length,
-    events.length === 1 ? 'event' : 'events',
-    events.map((event) => event.name).join(', '),
+    eventNames.length,
+    eventNames.length === 1 ? 'event' : 'events',
+    eventNames.join(', '),
   );
 }
