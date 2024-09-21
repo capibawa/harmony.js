@@ -1,5 +1,11 @@
 # harmony.js
 
+## 0.7.0
+
+### Minor Changes
+
+- f9a0208: Re-export discord.js
+
 ## 0.6.2
 
 ### Patch Changes
